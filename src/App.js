@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AddBookmark from './AddBookmark/AddBookmark';
 import BookmarkList from './BookmarkList/BookmarkList';
+import EditBookmark from './EditBookmark/EditBookmark'
 import Nav from './Nav/Nav';
 import config from './config';
 import './App.css';
@@ -29,6 +30,8 @@ const bookmarks = [
   // }
 ];
 
+
+
 class App extends Component {
   state = {
     page: 'list',
@@ -48,9 +51,26 @@ class App extends Component {
     })
   }
 
+  onClickDelete = bookmarkId => {
+    const newBookmarks = this.state.bookmarks.filter(bm =>
+      bm.id !== bookmarkId
+    )
+    this.setState({
+      bookmarks: newBookmarks
+    })
+  }
+
   addBookmark = bookmark => {
     this.setState({
       bookmarks: [ ...this.state.bookmarks, bookmark ],
+    })
+  }
+
+  updateBookmark = updatedBookmark => {
+    this.setState({
+      bookmarks: this.state.bookmarks.map(bm =>
+        (bm.id !== updatedBookmark.id) ? bm : updatedBookmark
+      )
     })
   }
 
@@ -88,6 +108,14 @@ class App extends Component {
           {page === 'list' && (
             <BookmarkList
               bookmarks={bookmarks}
+              onClickDelete={this.onClickDelete}
+              onClickEdit={this.onClickEdit}
+            />
+          )}
+          {page === 'edit' && (
+            <EditBookmark
+              path='/edit/:bookmarkId'
+              component={EditBookmark}
             />
           )}
         </div>
